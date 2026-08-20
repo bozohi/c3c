@@ -116,6 +116,11 @@ bool str_is_type(const char *string)
     return found_lower || ends_with_t;
 }
 
+int char_is_alpha(char c)
+{
+    return isalpha(c);
+}
+
 bool slice_is_type(const char *string, size_t len)
 {
     const char *begin = scan_past_underscore(string);
