@@ -89,40 +89,63 @@ bool str_is_type(const char *string)
     string = scan_past_underscore(string);
     if (!string) return false;
     char c = string++[0];
-    if (!char_is_upper(c)) return false;
+    if (!char_is_alpha(c)) return false;
+    
     bool found_lower = false;
+    bool ends_with_t = false;
+    const char *prev = string - 1;
+    
     while ((c = *(string++)) != '\0')
     {
         if (char_is_lower(c))
         {
             found_lower = true;
-            continue;
         }
-        if (!char_is_alphanum_(c)) return false;
+        else if (!char_is_alphanum_(c)) 
+        {
+            return false;
+        }
+        prev = string - 1;
     }
-    return found_lower;
+    
+    if (string - 2 >= prev && *(string - 2) == '_' && *(string - 1) == 't')
+    {
+        ends_with_t = true;
+    }
+    
+    return found_lower || ends_with_t;
 }
 
 bool slice_is_type(const char *string, size_t len)
 {
-	const char *begin = scan_past_underscore(string);
-	if (!begin) return false;
-	const char *end = string  + len;
-	if (begin == end) return false;
-	char c = begin++[0];
-	if (!char_is_upper(c)) return false;
-	bool found_lower = false;
-	while (begin != end)
-	{
-		c = begin++[0];
-		if (char_is_lower(c))
-		{
-			found_lower = true;
-			continue;
-		}
-		if (!char_is_alphanum_(c)) return false;
-	}
-	return found_lower;
+    const char *begin = scan_past_underscore(string);
+    if (!begin) return false;
+    const char *end = string + len;
+    if (begin == end) return false;
+    
+    char c = begin++[0];
+    if (!char_is_alpha(c)) return false;
+    
+    bool found_lower = false;
+    
+    while (begin != end)
+    {
+        c = begin++[0];
+        if (char_is_lower(c))
+        {
+            found_lower = true;
+        }
+        else if (!char_is_alphanum_(c)) 
+        {
+            return false;
+        }
+    }
+    
+    bool ends_with_t = (len >= 2 && 
+                        string[len - 1] == 't' && 
+                        string[len - 2] == '_');
+    
+    return found_lower || ends_with_t;
 }
 
 bool str_is_identifier(const char *string)

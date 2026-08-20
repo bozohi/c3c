@@ -358,7 +358,7 @@ static bool consume_type_name(ParseContext *c, const char* type)
 {
 	if (tok_is(c, TOKEN_IDENT) || token_is_keyword_ident(c->tok))
 	{
-		RETURN_PRINT_ERROR_HERE("Names of %ss must start with an uppercase letter.", type);
+		RETURN_PRINT_ERROR_HERE("Names of %ss must start with an uppercase letter OR end with \"_t\".", type);
 	}
 	if (tok_is(c, TOKEN_CONST_IDENT))
 	{
@@ -497,11 +497,11 @@ static inline TypeInfo *parse_base_type(ParseContext *c)
 			{
 				if (peek(c) == TOKEN_IDENT)
 				{
-					PRINT_ERROR_HERE("The name of a type must start with uppercase and contain at least one lowercase letter.");
+					PRINT_ERROR_HERE("The name of a type must start with uppercase and contain at least one lowercase letter OR the name must end with \"_t\".");
 				}
 				else
 				{
-					PRINT_ERROR_HERE("A type name was expected, but this looks a variable or function name (as it doesn't start with an uppercase letter).");
+					PRINT_ERROR_HERE("A type name was expected, but this looks a variable or function name (as it doesn't start with an uppercase letter nor end with \"_t\").");
 				}
 			}
 			else
@@ -2412,7 +2412,7 @@ static inline Decl *parse_alias_type(ParseContext *c)
 		}
 		if (token_is_some_ident(c->tok))
 		{
-			PRINT_ERROR_HERE("The type name must start with an uppercase letter followed by at least 1 lowercase letter.");
+			PRINT_ERROR_HERE("The type name must start with an uppercase letter followed by at least 1 lowercase letter OR the name must end with \"_t\".");
 			return poisoned_decl;
 		}
 		PRINT_ERROR_HERE("A type name was expected here.");

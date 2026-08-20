@@ -354,6 +354,15 @@ EXIT:;
 	{
 		return add_error_token(lexer, "An identifier cannot be longer than %d characters, but this one was %llu characters long.", MAX_IDENTIFIER_LENGTH, (unsigned long long)len);
 	}
+	if (type == normal && type_token != TOKEN_INVALID_TOKEN)
+	{
+		ptrdiff_t name_len = len - (prefix ? 1 : 0);
+		
+		if (name_len >= 3 && prev(lexer) == 't' && lexer->current[-2] == '_')
+		{
+			type = type_token;
+		}
+	}
 	const char *interned_string = symtab_add(lexer->lexing_start, (uint32_t)len, hash, &type);
 	switch (type)
 	{
